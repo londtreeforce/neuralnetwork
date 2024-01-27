@@ -6,3 +6,4 @@ Version 01
     - Added the word launch function trigger_function() to main.py
     27.01.24
     - Add proxyapi for ChatGPT OpenAI in Russia
+    

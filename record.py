@@ -53,28 +53,15 @@ def text_to_openai(recognized_text):
         base_url="https://api.proxyapi.ru/openai/v1",
     )
 
-    # chat_completion = client.chat.completions.create(
-    #     model="gpt-3.5-turbo", messages=[{"role": "user", "content": "Hello world"}]
-    # )
-    response = client.completions.create(
-             model="gpt-3.5-turbo",  # Replace with the desired GPT-3 engine configuration
-             prompt="The person said: " + "recognized_text",
 
-         )
-    response_text = response.choices[0].text.strip()
-    print("OpenAI GPT Response:")
-    print(response_text)
+    chat_completion = client.chat.completions.create(
+        model="gpt-3.5-turbo", messages=[{"role": "user", "content": recognized_text}]
+    )
 
-# def text_to_openai(recognized_text):
-#     response = openai.Completion.create(
-#         engine="gpt-3.5-turbo-1106",  # Replace with the desired GPT-3 engine configuration
-#         prompt="The person said: " + recognized_text,
-#
-#     )
-#
-#     response_text = response.choices[0].text.strip()
-#     print("OpenAI GPT Response:")
-#     print(response_text)
+    print(chat_completion.choices[0].message.content)
+
+
+
 
 def recordAll():
     audio_file = record_audio()
@@ -88,3 +75,24 @@ def recordAll():
 
 if __name__ == '__main__':
     recordAll()
+
+
+
+
+
+
+
+
+
+
+
+# def text_to_openai(recognized_text):
+#     response = openai.Completion.create(
+#         engine="gpt-3.5-turbo-1106",  # Replace with the desired GPT-3 engine configuration
+#         prompt="The person said: " + recognized_text,
+#
+#     )
+#
+#     response_text = response.choices[0].text.strip()
+#     print("OpenAI GPT Response:")
+#     print(response_text)
