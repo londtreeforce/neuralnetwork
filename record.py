@@ -3,13 +3,15 @@ import wave
 import speech_recognition as speech_r
 import librosa.display
 # from transformers import GPT2LMHeadModel, GPT2Tokenizer
+# import openai
+from openai import OpenAI
+import Config
 
 CHUNK = 1024
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 44100
 OUTPUT_FILENAME = "output.wav"
-
 p = pyaudio.PyAudio()
 RECORD_SECONDS = 5
 def record_audio():
@@ -45,16 +47,32 @@ def recognize_audio(audio_file):
         recognized_text = recognizer.recognize_google(audio_data, language="ru-RU")
     return recognized_text
 
+def text_to_openai(recognized_text):
+    client = OpenAI (
+        api_key=Config.API_KEY,
+        base_url="https://api.proxyapi.ru/openai/v1",
+    )
+
+    # chat_completion = client.chat.completions.create(
+    #     model="gpt-3.5-turbo", messages=[{"role": "user", "content": "Hello world"}]
+    # )
+    response = client.completions.create(
+             model="gpt-3.5-turbo",  # Replace with the desired GPT-3 engine configuration
+             prompt="The person said: " + "recognized_text",
+
+         )
+    response_text = response.choices[0].text.strip()
+    print("OpenAI GPT Response:")
+    print(response_text)
+
 # def text_to_openai(recognized_text):
-#     model_name = "gpt-2"
-#     tokenizer = GPT2Tokenizer.from_pretrained(model_name)
-#     model = GPT2LMHeadModel.from_pretrained(model_name)
+#     response = openai.Completion.create(
+#         engine="gpt-3.5-turbo-1106",  # Replace with the desired GPT-3 engine configuration
+#         prompt="The person said: " + recognized_text,
 #
-#     input_text = recognized_text
-#     inputs = tokenizer.encode("The person said: " + input_text, return_tensors="pt")
+#     )
 #
-#     response = model.generate(inputs, max_length=100, num_return_sequences=1, no_repeat_ngram_size=2, top_k=50, top_p=0.95, temperature=0.7)
-#     response_text = tokenizer.decode(response[0], skip_special_tokens=True)
+#     response_text = response.choices[0].text.strip()
 #     print("OpenAI GPT Response:")
 #     print(response_text)
 
@@ -63,7 +81,10 @@ def recordAll():
     recognized_text = recognize_audio(audio_file)
     print("Recognized Text:")
     print(recognized_text)
-    # text_to_openai(recognized_text)
+    text_to_openai(recognized_text)
+    # This Function Send recognized text to openAI
+
+
 
 if __name__ == '__main__':
     recordAll()
