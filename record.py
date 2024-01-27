@@ -6,6 +6,7 @@ import librosa.display
 # import openai
 from openai import OpenAI
 import Config
+import pyttsx3
 
 CHUNK = 1024
 FORMAT = pyaudio.paInt16
@@ -52,29 +53,37 @@ def text_to_openai(recognized_text):
         api_key=Config.API_KEY,
         base_url="https://api.proxyapi.ru/openai/v1",
     )
-
-
     chat_completion = client.chat.completions.create(
         model="gpt-3.5-turbo", messages=[{"role": "user", "content": recognized_text}]
     )
+    inMessage = chat_completion.choices[0].message.content
+    
+    print(inMessage) #Reconaizing to Sound
+    return inMessage
 
-    print(chat_completion.choices[0].message.content)
-
-
-
+def audio_playback(inMessage):
+    engine = pyttsx3.init()
+    text_to_speak = inMessage
+    engine.say(text_to_speak)
+    engine.runAndWait()
 
 def recordAll():
     audio_file = record_audio()
     recognized_text = recognize_audio(audio_file)
+
+
     print("Recognized Text:")
     print(recognized_text)
-    text_to_openai(recognized_text)
+
+    # text_to_openai(recognized_text)
     # This Function Send recognized text to openAI
 
-
+    inMessage = text_to_openai(recognized_text)
+    audio_playback(inMessage)
 
 if __name__ == '__main__':
     recordAll()
+
 
 
 

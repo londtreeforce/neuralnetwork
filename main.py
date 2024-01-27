@@ -15,7 +15,7 @@ def main():
             try:
                 text = recognizer.recognize_google(audio_data, language="ru-RU")
                 print("Recognized:", text)
-                if "Эй хуй" in text:
+                if "Алекс" in text:
                     trigger_function()
             except sr.UnknownValueError:
                 print("Could not understand the audio")
